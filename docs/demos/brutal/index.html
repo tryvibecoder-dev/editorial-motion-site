@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brutal — demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E8E4DA;
+  --ink:#111111;
+  --accent:#FF4D00;
+  --rule:#111111;
+  --pad:clamp(16px,3.5vw,48px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--paper)}
+body{background:var(--paper);color:var(--ink);font-family:'Space Mono',monospace;font-size:14px;line-height:1.55;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.display{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:900;text-transform:uppercase;line-height:.82;letter-spacing:-.02em}
+
+/* top bar */
+.bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:14px var(--pad);background:var(--paper);border-bottom:2px solid var(--rule)}
+.bar nav{display:flex;gap:22px}
+.bar nav a{position:relative}
+.bar nav a::after{content:"";position:absolute;left:0;bottom:-3px;width:100%;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.bar nav a:hover::after{transform:scaleX(1);transform-origin:left}
+.progress{position:absolute;left:0;bottom:-2px;height:4px;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0)}
+
+/* hero */
+.hero{min-height:100svh;padding:110px var(--pad) 0;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.hero-meta{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.hero h1{font-size:clamp(4rem,20vw,22rem);margin-top:4vh;transform:translateY(0)}
+.hero h1 .line{display:block;overflow:hidden;padding-bottom:.06em}
+.hero h1 .line span{display:inline-block}
+.hero-foot{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:24px 0 28px;border-top:2px solid var(--rule)}
+.hero-foot p{max-width:38ch;font-size:15px}
+.stamp{display:inline-block;background:var(--accent);color:var(--paper);padding:4px 10px;transform:rotate(-4deg)}
+
+/* marquee */
+.marquee{overflow:hidden;background:var(--ink);color:var(--paper);border-block:2px solid var(--ink);white-space:nowrap}
+.marquee-track{display:inline-flex;animation:slide 22s linear infinite;will-change:transform}
+.marquee-track span{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:900;font-size:clamp(2rem,5vw,4.5rem);text-transform:uppercase;padding:.15em .4em;line-height:1}
+.marquee-track span:nth-child(even){color:var(--accent)}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* sections */
+section{padding:14vh var(--pad);border-bottom:2px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:120px 1fr;gap:20px;align-items:baseline;margin-bottom:6vh}
+.sec-head h2{font-size:clamp(2.6rem,8vw,8rem)}
+
+/* services list with word swap */
+.rows{list-style:none;border-top:2px solid var(--rule)}
+.row{display:grid;grid-template-columns:70px 1fr auto;gap:16px;align-items:center;padding:22px 0;border-bottom:2px solid var(--rule);cursor:pointer;position:relative;overflow:hidden}
+.row .idx{font-size:12px}
+.row .title{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:900;text-transform:uppercase;font-size:clamp(1.6rem,4.4vw,4.2rem);line-height:.95;position:relative;display:inline-block}
+.row .alt{position:absolute;left:0;top:0;color:var(--accent);transform:translateY(100%);font-style:normal;pointer-events:none}
+.row .title .swap{display:inline-block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.row:hover .title .swap{transform:translateY(-100%)}
+.row:hover .alt{transform:translateY(0)}
+.row .tag{font-size:12px;border:1.5px solid var(--ink);padding:4px 10px}
+.row::before{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleY(0);transform-origin:bottom;transition:transform .45s cubic-bezier(.2,.8,.2,1);z-index:-1}
+.row{isolation:isolate}
+.row:hover{color:var(--paper)}
+.row:hover::before{transform:scaleY(1)}
+.row:hover .tag{border-color:var(--paper)}
+.row:hover .alt{color:var(--accent)}
+
+/* numbers */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:2px solid var(--rule)}
+.stat{padding:28px 20px 0 0;border-right:2px solid var(--rule);margin-right:20px}
+.stat:last-child{border-right:0}
+.stat .num{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:900;font-size:clamp(3.5rem,10vw,9rem);line-height:.85;font-variant-numeric:tabular-nums}
+.stat .lbl{margin-top:12px}
+
+/* work cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{border:2px solid var(--ink);padding:20px;display:flex;flex-direction:column;gap:18px;min-height:360px;background:var(--paper);transition:box-shadow 0s}
+.card .ph{flex:1;background:var(--ink);position:relative;overflow:hidden}
+.card .ph i{position:absolute;inset:0;background:repeating-linear-gradient(90deg,var(--accent) 0 2px,transparent 2px 14px);transform:scaleX(.2);transform-origin:left;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.card:hover .ph i{transform:scaleX(1)}
+.card h3{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:900;text-transform:uppercase;font-size:1.6rem;line-height:1}
+
+/* cta */
+.cta{background:var(--accent);color:var(--ink);padding:14vh var(--pad);border-bottom:0}
+.cta h2{font-size:clamp(3rem,13vw,13rem)}
+.btn{position:relative;display:inline-flex;align-items:center;gap:12px;margin-top:6vh;padding:20px 30px;border:2px solid var(--ink);background:transparent;color:var(--ink);font:700 13px 'Space Mono',monospace;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;overflow:hidden;isolation:isolate;border-radius:0}
+.btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateX(-101%);z-index:-1;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.btn:hover{color:var(--paper)}
+.btn:hover::before{transform:translateX(0)}
+
+footer{padding:40px var(--pad);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;background:var(--paper)}
+
+/* reveals start hidden only when JS runs */
+.js [data-reveal]{opacity:0}
+
+@media (max-width:900px){
+  .cards{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .stat{border-right:0;border-bottom:2px solid var(--rule);margin:0;padding:20px 0}
+  .hero-foot{grid-template-columns:1fr}
+  .sec-head{grid-template-columns:1fr;gap:8px}
+  .row{grid-template-columns:44px 1fr}
+  .row .tag{display:none}
+  .bar nav{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .marquee-track{animation:none}
+  .row::before,.row .title .swap,.row .alt,.card .ph i{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="bar mono">
+  <span>BRUTAL / studio</span>
+  <nav><a href="#work">Work</a><a href="#services">Services</a><a href="#numbers">Numbers</a><a href="#contact">Contact</a></nav>
+  <div class="progress" id="progress"></div>
+</header>
+
+<div class="hero">
+  <div class="hero-meta mono" style="margin-top:6px">
+    <span>Est. 2026 — Berlin</span>
+    <span><span class="stamp">Open for projects</span></span>
+    <span>(scroll)</span>
+  </div>
+  <h1 class="display" aria-label="Brutal">
+    <span class="line"><span class="w">BRU</span></span>
+    <span class="line"><span class="w">TAL</span></span>
+  </h1>
+  <div class="hero-foot">
+    <p data-reveal>We build loud, plain, fast sites for people who want to be remembered and not decorated. Every element earns its place or gets cut.</p>
+    <p class="mono" data-reveal style="justify-self:end;text-align:right">Scroll to see the grid<br>Hover the rows<br>Press the button</p>
+  </div>
+</div>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Identity ✳ Web ✳ Motion ✳ Print ✳ Systems ✳</span>
+    <span>Identity ✳ Web ✳ Motion ✳ Print ✳ Systems ✳</span>
+    <span>Identity ✳ Web ✳ Motion ✳ Print ✳ Systems ✳</span>
+    <span>Identity ✳ Web ✳ Motion ✳ Print ✳ Systems ✳</span>
+  </div>
+</div>
+
+<section id="services">
+  <div class="sec-head">
+    <p class="mono">(01)<br>Services</p>
+    <h2 class="display" data-reveal>What we do</h2>
+  </div>
+  <ul class="rows">
+    <li class="row" data-hover>
+      <span class="idx mono">01</span>
+      <span class="title"><span class="swap">Identity</span><span class="alt" aria-hidden="true">Marks</span></span>
+      <span class="tag mono">Logo, type, rules</span>
+    </li>
+    <li class="row" data-hover>
+      <span class="idx mono">02</span>
+      <span class="title"><span class="swap">Websites</span><span class="alt" aria-hidden="true">Sites</span></span>
+      <span class="tag mono">Static, fast, honest</span>
+    </li>
+    <li class="row" data-hover>
+      <span class="idx mono">03</span>
+      <span class="title"><span class="swap">Motion</span><span class="alt" aria-hidden="true">Timing</span></span>
+      <span class="tag mono">Scroll, UI, loops</span>
+    </li>
+    <li class="row" data-hover>
+      <span class="idx mono">04</span>
+      <span class="title"><span class="swap">Print</span><span class="alt" aria-hidden="true">Paper</span></span>
+      <span class="tag mono">Posters, books</span>
+    </li>
+  </ul>
+</section>
+
+<section id="numbers">
+  <div class="sec-head">
+    <p class="mono">(02)<br>Numbers</p>
+    <h2 class="display" data-reveal>Since 2019</h2>
+  </div>
+  <div class="stats">
+    <div class="stat" data-reveal><div class="num" data-count="84">0</div><p class="lbl mono">Projects shipped</p></div>
+    <div class="stat" data-reveal><div class="num" data-count="31">0</div><p class="lbl mono">Clients still here</p></div>
+    <div class="stat" data-reveal><div class="num" data-count="12">0</div><p class="lbl mono">Countries reached</p></div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="sec-head">
+    <p class="mono">(03)<br>Work</p>
+    <h2 class="display" data-reveal>Selected</h2>
+  </div>
+  <div class="cards">
+    <article class="card" data-reveal><div class="ph"><i></i></div><h3>Tram Line 9</h3><p class="mono">Transit identity</p></article>
+    <article class="card" data-reveal><div class="ph"><i></i></div><h3>Night Market</h3><p class="mono">Event site</p></article>
+    <article class="card" data-reveal><div class="ph"><i></i></div><h3>Type Foundry</h3><p class="mono">Specimen book</p></article>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <p class="mono">(04)<br>Contact</p>
+  <h2 class="display" data-reveal>Say hello</h2>
+  <button class="btn" id="magnet" data-hover>Start a project →</button>
+</section>
+
+<footer class="mono">
+  <span>© 2026 Brutal studio</span>
+  <span>hello@brutal.example</span>
+  <span>Back to <a href="../../design-styles/" style="text-decoration:underline">design styles</a></span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // hero: masked letter rise on load
+  const heroWords = document.querySelectorAll('.hero h1 .w');
+  heroWords.forEach(w => {
+    const html = w.textContent; w.textContent = '';
+    [...html].forEach(ch => { const s = document.createElement('span'); s.textContent = ch; s.style.display='inline-block'; w.appendChild(s); });
+  });
+  if (!reduce) {
+    gsap.from('.hero h1 .w > span', { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: 0.035, delay: 0.1 });
+    gsap.from('.hero-meta, .hero-foot', { opacity: 0, duration: 0.8, stagger: 0.15, delay: 0.5 });
+  }
+
+  // scroll progress bar
+  gsap.to('#progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
+
+  // reveals
+  gsap.utils.toArray('[data-reveal]').forEach(el => {
+    gsap.fromTo(el, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+  });
+
+  // counters
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = +el.dataset.count;
+    ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => {
+      if (reduce) { el.textContent = target; return; }
+      gsap.to({ v: 0 }, { v: target, duration: 1.6, ease: 'power2.out',
+        onUpdate() { el.textContent = Math.round(this.targets()[0].v); } });
+    }});
+  });
+
+  // magnetic button
+  const btn = document.getElementById('magnet');
+  if (!reduce && matchMedia('(pointer: fine)').matches) {
+    const xTo = gsap.quickTo(btn, 'x', { duration: 0.6, ease: 'elastic.out(1,0.4)' });
+    const yTo = gsap.quickTo(btn, 'y', { duration: 0.6, ease: 'elastic.out(1,0.4)' });
+    btn.addEventListener('pointermove', e => {
+      const r = btn.getBoundingClientRect();
+      xTo((e.clientX - r.left - r.width / 2) * 0.35);
+      yTo((e.clientY - r.top - r.height / 2) * 0.35);
+    });
+    btn.addEventListener('pointerleave', () => { xTo(0); yTo(0); });
+  }
+
+  // rows: stagger in
+  if (!reduce) {
+    gsap.from('.row', { scrollTrigger: { trigger: '.rows', start: 'top 80%', once: true },
+      scaleX: 0.96, opacity: 0, duration: 0.7, stagger: 0.09, ease: 'power2.out', transformOrigin: 'left' });
+  }
+})();
+</script>
+</body>
+</html>

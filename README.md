@@ -27,7 +27,25 @@ Then ask Claude for a one-page site, a landing page, a studio or portfolio page,
 SKILL.md          the skill itself
 docs/             the demo page published with GitHub Pages
 docs/images/      screenshots of sites built with the skill
+docs/demos/       demo sites built from the design-styles catalogue
+docs/design-styles/ the design-styles section of the live page
+skills/design-styles/ 200 visual directions, animations and 3D notes
 ```
+
+## Demos
+
+Six sites, all built as single HTML files with GSAP and ScrollTrigger, some with Three.js. Each one follows the tutorials in `skills/design-styles/references/animations.md` and `3d.md`.
+
+| Demo | Idea | Motion used |
+| --- | --- | --- |
+| [Bauhaus](https://tryvibecoder-dev.github.io/editorial-motion-site/demos/bauhaus/) | geometry as language | shapes rotate and parallax on scroll |
+| [Ma](https://tryvibecoder-dev.github.io/editorial-motion-site/demos/ma/) | Japanese emptiness | slow fades, large gaps |
+| [Kinetic type](https://tryvibecoder-dev.github.io/editorial-motion-site/demos/kinetic/) | type as the object | variable font scrubbed by scroll |
+| [Brutal](https://tryvibecoder-dev.github.io/editorial-motion-site/demos/brutal/) | raw grid, black marquee | marquee, word swap, magnetic button, counters |
+| [Signal](https://tryvibecoder-dev.github.io/editorial-motion-site/demos/signal/) | terminal mood | typed command, flicker, grain, scrubbed text |
+| [Orbit](https://tryvibecoder-dev.github.io/editorial-motion-site/demos/orbit/) | 3D object | Three.js, pinned morph, parallax, tilting cards |
+
+The full catalogue and the list of files is on the [design-styles page](https://tryvibecoder-dev.github.io/editorial-motion-site/design-styles/).
 
 ## License
 

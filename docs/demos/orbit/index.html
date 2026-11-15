@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbit — demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;800&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#15131C;
+  --panel:#1F1B29;
+  --ink:#F2EEE6;
+  --mute:#8E88A0;
+  --lime:#B6FF3B;
+  --pad:clamp(18px,4vw,56px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:'Newsreader',Georgia,serif;font-size:18px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.unb{font-family:'Unbounded',sans-serif;font-weight:800;letter-spacing:-.02em;text-transform:uppercase;line-height:.92}
+
+nav.top{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:18px var(--pad);mix-blend-mode:difference;color:#fff}
+nav.top .links{display:flex;gap:24px}
+nav.top a{font-family:'DM Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+
+/* hero with canvas */
+.hero{position:relative;height:100svh;min-height:560px;overflow:hidden;display:flex;align-items:flex-end}
+#stage{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-copy{position:relative;z-index:2;padding:0 var(--pad) 9vh;max-width:min(900px,100%)}
+.hero-copy h1{font-size:clamp(3rem,10vw,9.5rem)}
+.hero-copy h1 .l{display:block;overflow:hidden}
+.hero-copy h1 .l > span{display:inline-block}
+.hero-copy .sub{margin-top:22px;font-size:clamp(1.2rem,2vw,1.6rem);font-style:italic;max-width:34ch;color:#d8d3c7}
+.scroll-cue{position:absolute;right:var(--pad);bottom:9vh;z-index:2}
+
+/* sections */
+section{position:relative;padding:16vh var(--pad);border-top:1px solid #2c2839}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:7vh;flex-wrap:wrap}
+.head h2{font-size:clamp(2.2rem,6vw,5.6rem)}
+.lede{font-size:clamp(1.4rem,2.6vw,2.2rem);line-height:1.25;max-width:30ch;font-style:italic}
+
+/* parallax layers */
+.layers{position:relative;height:120vh}
+.layer{position:absolute;left:var(--pad);right:var(--pad);font-family:'Unbounded',sans-serif;font-weight:800;text-transform:uppercase;font-size:clamp(3rem,11vw,12rem);line-height:.9;white-space:nowrap;will-change:transform}
+.layer.a{top:4%;color:var(--ink)}
+.layer.b{top:36%;color:transparent;-webkit-text-stroke:1.5px var(--lime)}
+.layer.c{top:68%;color:#3a3449}
+
+/* pinned cards with 3D tilt */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:4vh}
+.card{position:relative;background:var(--panel);border:1px solid #2c2839;padding:26px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between;transform-style:preserve-3d;overflow:hidden;will-change:transform}
+.card .glare{position:absolute;inset:-40%;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.18),transparent 45%);opacity:0;pointer-events:none;transition:opacity .4s}
+.card:hover .glare{opacity:1}
+.card h3{font-family:'Unbounded',sans-serif;font-weight:500;font-size:1.3rem;text-transform:uppercase;transform:translateZ(40px)}
+.card p{transform:translateZ(24px);color:#cfc9da}
+.card .n{transform:translateZ(60px);font-family:'DM Mono',monospace;color:var(--lime)}
+
+/* sticky spin section */
+.spin{position:relative;height:260vh}
+.spin-stage{position:sticky;top:0;height:100svh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px;padding:0 var(--pad);overflow:hidden}
+#spinCanvas{width:100%;height:100%;position:absolute;inset:0;display:block}
+.spin-text{position:relative;z-index:2;max-width:26ch}
+.spin-text .big{font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,4.6rem);line-height:.95;text-transform:uppercase}
+.spin-text .big em{font-family:'Newsreader',serif;font-style:italic;font-weight:300;text-transform:none;color:var(--lime)}
+.step{margin-top:26px;font-family:'DM Mono',monospace;font-size:13px;color:var(--mute)}
+
+footer{padding:48px var(--pad);border-top:1px solid #2c2839;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+footer a{text-decoration:underline}
+
+.btn{display:inline-block;margin-top:4vh;padding:16px 26px;border:1px solid var(--lime);color:var(--lime);font-family:'DM Mono',monospace;font-size:13px;text-transform:uppercase;letter-spacing:.06em;position:relative;overflow:hidden;isolation:isolate;transition:color .4s}
+.btn::before{content:"";position:absolute;inset:0;background:var(--lime);transform:translateY(101%);transition:transform .5s cubic-bezier(.2,.8,.2,1);z-index:-1;border-radius:50% 50% 0 0}
+.btn:hover{color:var(--bg)}
+.btn:hover::before{transform:translateY(0);border-radius:0}
+
+.js [data-reveal]{opacity:0}
+
+@media (max-width:900px){
+  .cards{grid-template-columns:1fr}
+  .spin-stage{grid-template-columns:1fr;grid-template-rows:55% 45%;padding-top:70px}
+  .layer.a,.layer.b,.layer.c{font-size:clamp(2.2rem,14vw,5rem)}
+  nav.top .links{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .card{transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <span class="mono" style="mix-blend-mode:normal;color:var(--ink)">Orbit ◎</span>
+  <div class="links"><a href="#lab">Lab</a><a href="#spin">Spin</a><a href="#work">Work</a><a href="#contact">Contact</a></div>
+</nav>
+
+<header class="hero" id="top">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <div class="hero-copy">
+    <p class="mono" style="margin-bottom:22px">Studio for objects that move</p>
+    <h1 class="unb"><span class="l"><span>Slow</span></span><span class="l"><span>orbit</span></span></h1>
+    <p class="sub" data-reveal>We model, light and animate small worlds for the web. Drag the object, scroll to turn it, hover the cards.</p>
+  </div>
+  <p class="mono scroll-cue">Scroll ↓</p>
+</header>
+
+<section id="lab">
+  <div class="head">
+    <h2 class="unb" data-reveal>Parallax lab</h2>
+    <p class="mono">three layers / three speeds</p>
+  </div>
+  <div class="layers">
+    <div class="layer a" data-speed="0.25">Depth</div>
+    <div class="layer b" data-speed="0.6">Motion</div>
+    <div class="layer c" data-speed="1.1">Light</div>
+  </div>
+</section>
+
+<section id="spin">
+  <div class="spin" id="spinWrap">
+    <div class="spin-stage">
+      <canvas id="spinCanvas" aria-hidden="true"></canvas>
+      <div class="spin-text">
+        <p class="mono" style="margin-bottom:18px">Pinned / scrubbed</p>
+        <h2 class="big" id="spinHead">One object, <em>four</em> readings</h2>
+        <p class="step" id="spinStep">01 — lattice</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="head">
+    <h2 class="unb" data-reveal>Selected work</h2>
+    <p class="lede" data-reveal>Three quiet pieces. Tilt them.</p>
+  </div>
+  <div class="cards">
+    <article class="card" data-tilt>
+      <div class="glare"></div>
+      <span class="n mono">01</span>
+      <div><h3>Helix Rail</h3><p>Interactive timetable for a transit network, built around one moving line.</p></div>
+    </article>
+    <article class="card" data-tilt>
+      <div class="glare"></div>
+      <span class="n mono">02</span>
+      <div><h3>Glass Atlas</h3><p>Museum catalogue where every object turns when you pass it.</p></div>
+    </article>
+    <article class="card" data-tilt>
+      <div class="glare"></div>
+      <span class="n mono">03</span>
+      <div><h3>Night Lattice</h3><p>Generative poster series, rendered in real time, exported as stills.</p></div>
+    </article>
+  </div>
+</section>
+
+<section id="contact" style="border-bottom:0">
+  <h2 class="unb" data-reveal style="font-size:clamp(2.6rem,9vw,8rem)">Make something<br>that turns.</h2>
+  <a class="btn" href="mailto:hello@orbit.example" data-hover>hello@orbit.example</a>
+</section>
+
+<footer class="mono">
+  <span>© 2026 Orbit studio</span>
+  <span><a href="../../design-styles/">back to design styles</a></span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(pointer: fine)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ---------- hero object: lit torus knot with wireframe shell ----------
+  function makeScene(canvas, opts) {
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+    camera.position.set(0, 0, opts.camZ);
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const geo = new THREE.TorusKnotGeometry(1, 0.32, 220, 26, 2, 3);
+    const solid = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xF2EEE6, roughness: 0.35, metalness: 0.2 }));
+    const wire = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0xB6FF3B, wireframe: true, transparent: true, opacity: 0.35 }));
+    wire.scale.setScalar(1.06);
+    group.add(solid, wire);
+
+    const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(3, 4, 5);
+    const rim = new THREE.DirectionalLight(0xB6FF3B, 0.8); rim.position.set(-4, -2, -3);
+    scene.add(key, rim, new THREE.AmbientLight(0x404050, 0.6));
+
+    function resize() {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+    resize();
+    addEventListener('resize', resize);
+    return { renderer, scene, camera, group, solid, wire, resize };
+  }
+
+  const hero = makeScene(document.getElementById('stage'), { camZ: 6 });
+  hero.group.position.x = 0.9;
+  const heroBase = { rx: 0.2, ry: 0 };
+  let pointer = { x: 0, y: 0 };
+  addEventListener('pointermove', e => {
+    pointer.x = (e.clientX / innerWidth - 0.5);
+    pointer.y = (e.clientY / innerHeight - 0.5);
+  });
+
+  // ---------- pinned scrub scene ----------
+  const spin = makeScene(document.getElementById('spinCanvas'), { camZ: 5.4 });
+  spin.group.position.x = 0;
+  const readings = [
+    { name: '01 — lattice', wire: 0.35, color: 0xB6FF3B, rot: 0 },
+    { name: '02 — solid',   wire: 0.0,  color: 0xF2EEE6, rot: Math.PI * 0.5 },
+    { name: '03 — signal',  wire: 0.7,  color: 0xFF7A3D, rot: Math.PI },
+    { name: '04 — orbit',   wire: 0.2,  color: 0x7AD7FF, rot: Math.PI * 1.5 },
+  ];
+
+  // ---------- render loop ----------
+  const clock = new THREE.Clock();
+  function tick() {
+    const t = clock.getElapsedTime();
+    // hero: float + drag-ish pointer lean, scroll adds spin (set in ScrollTrigger)
+    hero.group.position.y = Math.sin(t * 0.9) * 0.08;
+    hero.group.rotation.x = heroBase.rx + pointer.y * 0.4;
+    hero.group.rotation.y = heroBase.ry + t * 0.15 + pointer.x * 0.6;
+    hero.renderer.render(hero.scene, hero.camera);
+
+    spin.renderer.render(spin.scene, spin.camera);
+    requestAnimationFrame(tick);
+  }
+  if (!reduce) tick(); else { hero.renderer.render(hero.scene, hero.camera); spin.renderer.render(spin.scene, spin.camera); }
+
+  // hero intro: title rise
+  if (!reduce) {
+    gsap.from('.hero-copy h1 .l > span', { yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.12, delay: 0.15 });
+    gsap.from('.hero-copy .mono, .hero-copy .sub', { opacity: 0, y: 14, duration: 0.8, delay: 0.6, stagger: 0.12 });
+  }
+
+  // scroll: hero object turns with the page
+  gsap.to(heroBase, { ry: Math.PI * 2, rx: 1.1, ease: 'none',
+    scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true } });
+
+  // parallax layers
+  if (!reduce) {
+    document.querySelectorAll('.layer').forEach(el => {
+      gsap.to(el, { y: () => -innerHeight * (+el.dataset.speed) * 0.35, ease: 'none',
+        scrollTrigger: { trigger: '.layers', start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+  }
+
+  // pinned sticky section: morph between readings
+  const spinHead = document.getElementById('spinHead');
+  const spinStep = document.getElementById('spinStep');
+  const state = { i: 0, wire: readings[0].wire, rot: readings[0].rot };
+  const c = new THREE.Color();
+  function applyState() {
+    spin.wire.material.opacity = state.wire;
+    spin.wire.visible = state.wire > 0.01;
+    spin.group.rotation.y = state.rot;
+    spin.group.rotation.x = 0.35;
+    spin.solid.material.color.copy(c.set(readings[Math.round(state.i)].color));
+  }
+  const timeline = gsap.timeline({
+    scrollTrigger: { trigger: '#spinWrap', start: 'top top', end: 'bottom bottom', scrub: 0.8, pin: '.spin-stage', pinSpacing: false,
+      onUpdate: self => {
+        const idx = Math.min(readings.length - 1, Math.floor(self.progress * readings.length));
+        if (spinStep.textContent !== readings[idx].name) spinStep.textContent = readings[idx].name;
+      } } });
+  readings.forEach((r, i) => {
+    if (i === 0) return;
+    timeline.to(state, { i: i, wire: r.wire, rot: r.rot, duration: 1, ease: 'power2.inOut', onUpdate: applyState });
+  });
+  applyState();
+
+  // resize-safe pin
+  addEventListener('load', () => ScrollTrigger.refresh());
+
+  // generic reveals
+  gsap.utils.toArray('[data-reveal]').forEach(el => {
+    gsap.fromTo(el, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+
+  // card tilt with quickTo (fine pointer only)
+  if (!reduce && fine) {
+    document.querySelectorAll('[data-tilt]').forEach(card => {
+      const rx = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3.out' });
+      const ry = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3.out' });
+      const glare = card.querySelector('.glare');
+      card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        ry((px - 0.5) * 16);
+        rx((0.5 - py) * 14);
+        gsap.set(glare, { x: (px - 0.5) * 90, y: (py - 0.5) * 90 });
+      });
+      card.addEventListener('pointerleave', () => { rx(0); ry(0); });
+    });
+  }
+})();
+</script>
+</body>
+</html>
