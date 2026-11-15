@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASCII — turn any picture into colored text</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#2B4CFF;--ink:#F5F3EE;--pad:4vw;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.02em;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.serif-i{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400}
+
+.top{display:flex;justify-content:space-between;align-items:center;padding:24px var(--pad) 0}
+.top nav{display:flex;gap:28px}
+.top a{position:relative}
+.top a::after{content:"";position:absolute;left:0;bottom:-4px;width:100%;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+.top a:hover::after{transform:scaleX(1);transform-origin:left}
+
+.hero{position:relative;padding:12vh var(--pad) 6vh;overflow:hidden}
+.hero h1{font-family:'Archivo Black',sans-serif;font-weight:400;font-size:clamp(5rem,20vw,19rem);line-height:.85;letter-spacing:-.035em}
+.hero p.sub{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(1.8rem,4vw,4rem);line-height:1.05;margin-top:24px;max-width:18ch}
+.rule{height:1px;background:var(--ink);margin:40px 0 18px;transform-origin:left center}
+
+.tool{padding:4vh var(--pad) 16vh;display:grid;grid-template-columns:320px 1fr;gap:4vw;align-items:start}
+.panel{border:1px solid var(--ink);padding:24px}
+.panel h2{font-family:'Archivo Black',sans-serif;font-weight:400;font-size:1.3rem;text-transform:uppercase;margin-bottom:18px}
+.drop{border:1px dashed var(--ink);padding:36px 18px;text-align:center;cursor:pointer;transition:background .3s,color .3s}
+.drop.over,.drop:hover{background:var(--ink);color:var(--bg)}
+.drop input{display:none}
+.ctl{margin-top:24px;display:grid;gap:18px}
+.ctl label{display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.ctl .row{display:flex;justify-content:space-between;align-items:center}
+input[type=range]{width:100%;accent-color:var(--ink)}
+select{font-family:inherit;font-size:13px;background:transparent;color:var(--ink);border:1px solid var(--ink);padding:8px}
+select option{color:#000}
+.check{flex-direction:row!important;align-items:center;gap:10px!important;text-transform:none!important;letter-spacing:0!important;font-size:13px!important}
+.btns{margin-top:24px;display:flex;flex-wrap:wrap;gap:12px}
+.btn{position:relative;isolation:isolate;overflow:hidden;background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:14px 18px;font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;cursor:pointer;border-radius:0;transition:border-radius .7s var(--ease),color .4s}
+.btn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--ink);transform:scaleX(0);transform-origin:left center;transition:transform .7s var(--ease)}
+.btn:hover{color:var(--bg);border-radius:999px}
+.btn:hover::before{transform:scaleX(1)}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.out{min-width:0}
+.out .box{background:#000;border:1px solid var(--ink);padding:16px;overflow:auto;max-height:78vh;color:var(--ink)}
+.out pre{font-family:'JetBrains Mono',monospace;font-size:9px;line-height:1;letter-spacing:0;white-space:pre;margin:0}
+.empty{min-height:340px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+.empty span{font-family:'Instrument Serif',serif;font-style:italic;font-size:2rem}
+.note{margin-top:14px}
+
+footer{padding:6vh var(--pad) 4vh;border-top:1px solid var(--ink);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+
+@media (max-width:900px){
+  .tool{grid-template-columns:1fr}
+  .top nav{display:none}
+}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top mono">
+  <span>ascii</span>
+  <nav>
+    <a href="../">Skill</a>
+    <a href="#tool">Tool</a>
+    <a href="https://github.com/tryvibecoder-dev/editorial-motion-site" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>ASCII</h1>
+  <p class="sub">Any picture, rebuilt from coloured characters.</p>
+  <div class="rule"></div>
+  <p class="mono">converter · runs in your browser · nothing is uploaded</p>
+</section>
+
+<section class="tool" id="tool">
+  <aside class="panel">
+    <h2>Image</h2>
+    <label class="drop" id="drop">
+      <span class="mono">Drop a PNG here<br>or click to choose</span>
+      <input type="file" id="file" accept="image/*">
+    </label>
+
+    <div class="ctl">
+      <label>
+        <span class="row"><span>Width</span><span id="wVal">110</span></span>
+        <input type="range" id="width" min="30" max="200" value="110">
+      </label>
+      <label>
+        <span>Character set</span>
+        <select id="charset">
+          <option value="dense">dense: @%#*+=-:.</option>
+          <option value="blocks">blocks: █▓▒░</option>
+          <option value="simple">simple: #@%&amp;8WM…</option>
+          <option value="thin">thin: long ramp</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" id="color" checked> Colour</label>
+      <label class="check"><input type="checkbox" id="invert"> Invert (for light backgrounds)</label>
+    </div>
+
+    <div class="btns">
+      <button class="btn" id="dlTxt" disabled>Save .txt</button>
+      <button class="btn" id="dlHtml" disabled>Save .html</button>
+      <button class="btn" id="copy" disabled>Copy text</button>
+    </div>
+    <p class="mono note">Colour output is best viewed in the browser.</p>
+  </aside>
+
+  <div class="out">
+    <div class="panel box" id="box">
+      <div class="empty" id="empty"><span>Choose a picture to start.</span></div>
+      <pre id="art" hidden></pre>
+    </div>
+  </div>
+</section>
+
+<footer class="mono">
+  <span>© 2026 ascii</span>
+  <span>Part of editorial-motion-site · MIT</span>
+</footer>
+
+<script>
+const CHARS = {
+  dense: "@%#*+=-:. ",
+  blocks: "█▓▒░ ",
+  simple: "#@%&8WM*oc;:,. ",
+  thin: "@$B8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
+};
+
+const el = id => document.getElementById(id);
+const drop = el('drop'), file = el('file');
+let plainText = '', htmlDoc = '', img = null;
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function render(){
+  if (!img) return;
+  const cols = +el('width').value;
+  const rows = Math.max(1, Math.round(img.height / img.width * cols * 0.5));
+  const cv = document.createElement('canvas');
+  cv.width = cols; cv.height = rows;
+  const ctx = cv.getContext('2d', { willReadFrequently: true });
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cols, rows);
+  ctx.drawImage(img, 0, 0, cols, rows);
+  const data = ctx.getImageData(0, 0, cols, rows).data;
+  const set = CHARS[el('charset').value];
+  const colour = el('color').checked;
+  const invert = el('invert').checked;
+
+  let text = '', html = '';
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const i = (y * cols + x) * 4;
+      const r = data[i], g = data[i+1], b = data[i+2];
+      let v = (0.2126*r + 0.7152*g + 0.0722*b) / 255;
+      if (invert) v = 1 - v;
+      const ch = set[Math.round(v * (set.length - 1))];
+      text += ch;
+      if (ch === ' ') { html += ' '; }
+      else if (colour) { html += `<span style="color:rgb(${r},${g},${b})">${esc(ch)}</span>`; }
+      else { html += esc(ch); }
+    }
+    text += '\n'; html += '\n';
+  }
+  plainText = text;
+  const pre = el('art');
+  pre.innerHTML = html;
+  pre.hidden = false;
+  el('empty').hidden = true;
+  htmlDoc = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>ASCII art</title>` +
+    `<style>body{background:#000;margin:0;padding:24px}pre{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;line-height:1;margin:0}</style>` +
+    `</head><body><pre>${html}</pre></body></html>`;
+  ['dlTxt','dlHtml','copy'].forEach(id => el(id).disabled = false);
+}
+
+function load(f){
+  if (!f || !f.type.startsWith('image/')) return;
+  const url = URL.createObjectURL(f);
+  const im = new Image();
+  im.onload = () => { img = im; render(); URL.revokeObjectURL(url); };
+  im.src = url;
+}
+
+function download(name, type, content){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); load(e.dataTransfer.files[0]); });
+file.addEventListener('change', () => load(file.files[0]));
+
+el('width').addEventListener('input', e => { el('wVal').textContent = e.target.value; render(); });
+['charset','color','invert'].forEach(id => el(id).addEventListener('change', render));
+
+el('dlTxt').addEventListener('click', () => download('ascii.txt', 'text/plain', plainText));
+el('dlHtml').addEventListener('click', () => download('ascii.html', 'text/html', htmlDoc));
+el('copy').addEventListener('click', async e => {
+  try { await navigator.clipboard.writeText(plainText); e.currentTarget.textContent = 'Copied'; }
+  catch { e.currentTarget.textContent = 'Copy failed'; }
+  setTimeout(() => e.currentTarget.textContent = 'Copy text', 1600);
+});
+</script>
+</body>
+</html>
