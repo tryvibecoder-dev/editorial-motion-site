@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinetic type — demo of style 46</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#000;--paper:#FFF;--accent:#FF3B1F}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'JetBrains Mono',monospace;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:20px 4vw;font-size:12px;text-transform:uppercase;letter-spacing:.1em;z-index:5;mix-blend-mode:difference;color:#fff}
+.word{font-family:'Archivo',sans-serif;font-weight:var(--w,900);font-stretch:var(--s,100%);font-size:clamp(5rem,22vw,28rem);line-height:.82;letter-spacing:-.04em;text-transform:uppercase;white-space:nowrap;display:block;will-change:transform,font-variation-settings}
+.stage{height:360vh;position:relative}
+.sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.l1{transform:translateX(-10vw)}
+.l2{color:var(--accent);text-align:right}
+.l3{-webkit-text-stroke:2px var(--ink);color:transparent}
+.caption{position:absolute;left:4vw;bottom:6vh;font-size:13px;max-width:36ch;line-height:1.6}
+.end{padding:20vh 4vw;border-top:2px solid var(--ink)}
+.end p{font-family:'Archivo',sans-serif;font-weight:800;font-stretch:125%;font-size:clamp(2.4rem,7vw,7rem);line-height:.95;text-transform:uppercase}
+.end p span{color:var(--accent)}
+footer{padding:4vh 4vw;display:flex;justify-content:space-between;font-size:12px;text-transform:uppercase;border-top:2px solid var(--ink)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header><a href="../../design-styles/">← design styles</a><span>46 · kinetic type</span></header>
+
+<div class="stage" id="stage">
+  <div class="sticky">
+    <span class="word l1" id="w1">motion</span>
+    <span class="word l2" id="w2">type</span>
+    <span class="word l3" id="w3">grows</span>
+    <p class="caption">Scroll to change weight and width. Words stay readable, one or two at a time.</p>
+  </div>
+</div>
+
+<section class="end">
+  <p>Launch week<br><span>now live</span></p>
+</section>
+
+<footer><span>kinetic · 2026 demo</span><span>scroll down</span></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const tl = gsap.timeline({ scrollTrigger: { trigger: '#stage', start: 'top top', end: 'bottom bottom', scrub: 0.6 } });
+  tl.to('#w1', { x: '40vw', fontVariationSettings: '"wght" 300, "wdth" 62', duration: 1 }, 0)
+    .to('#w2', { x: '-30vw', fontVariationSettings: '"wght" 900, "wdth" 125', duration: 1 }, 0.2)
+    .to('#w3', { x: '20vw', rotation: 8, duration: 1 }, 0.4)
+    .to('#w1', { x: '-20vw', fontVariationSettings: '"wght" 900, "wdth" 125', duration: 1 }, 1.2)
+    .to('#w2', { x: '10vw', fontVariationSettings: '"wght" 300, "wdth" 62', duration: 1 }, 1.4)
+    .to('#w3', { x: '-10vw', rotation: 0, fontVariationSettings: '"wght" 100, "wdth" 100', duration: 1 }, 1.6);
+}
+</script>
+</body>
+</html>

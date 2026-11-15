@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design styles — a catalogue of 200 visual directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#2B4CFF;--ink:#F5F3EE;--pad:4vw;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+header{display:flex;justify-content:space-between;padding:22px var(--pad);border-bottom:1px solid var(--ink)}
+header nav{display:flex;gap:26px}
+.hero{padding:14vh var(--pad) 8vh}
+.hero h1{font-family:'Archivo Black',sans-serif;font-weight:400;font-size:clamp(3.4rem,10vw,10rem);line-height:.88;letter-spacing:-.03em;text-transform:uppercase}
+.sub{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(1.6rem,3vw,2.8rem);margin-top:3vh;max-width:30ch}
+section{padding:12vh var(--pad);border-top:1px solid var(--ink)}
+section > .mono{margin-bottom:5vh}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:4vw}
+.lead{font-family:'Archivo Black',sans-serif;font-size:clamp(1.2rem,2vw,2rem);line-height:1.2;text-transform:uppercase}
+.lead em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;text-transform:none;font-size:1.15em}
+.demos{display:grid;grid-template-columns:repeat(3,1fr);gap:2vw}
+.demo{border:1px solid var(--ink);padding:26px;display:flex;flex-direction:column;gap:14px;min-height:340px;transition:background .4s,color .4s}
+.demo:hover{background:var(--ink);color:var(--bg)}
+.demo .n{font-size:11px;letter-spacing:.14em}
+.demo h3{font-family:'Archivo Black',sans-serif;font-weight:400;font-size:clamp(1.6rem,2.6vw,2.4rem);text-transform:uppercase;line-height:1}
+.demo p{font-size:12.5px;line-height:1.6;flex:1}
+.demo .go{font-family:'Archivo Black',sans-serif;font-size:12px;text-transform:uppercase;margin-top:auto}
+.files{list-style:none;border-top:1px solid var(--ink)}
+.files li{display:grid;grid-template-columns:18rem 1fr;gap:3vw;padding:14px 0;border-bottom:1px solid var(--ink)}
+.files code{font-family:'JetBrains Mono',monospace;font-size:12px}
+.install{margin-top:4vh;border:1px solid var(--ink);padding:18px 22px;font-size:13px;word-break:break-all}
+footer{padding:6vh var(--pad);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;border-top:1px solid var(--ink)}
+@media (max-width:900px){.cols{grid-template-columns:1fr}.demos{grid-template-columns:1fr}.files li{grid-template-columns:1fr;gap:4px}header nav{display:none}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="mono">
+  <a href="../">← editorial-motion-site</a>
+  <nav><a href="#what">What</a><a href="#demos">Demos</a><a href="#files">Files</a></nav>
+</header>
+
+<div class="hero">
+  <h1>Design<br>styles</h1>
+  <p class="sub">A catalogue of 200 visual directions, each with type, colour, grid and motion, for choosing a style on purpose.</p>
+</div>
+
+<section id="what">
+  <p class="mono">(01) What it is</p>
+  <div class="cols">
+    <p class="lead">The <em>skill</em> lists 200 styles across four files: classics, interfaces, print, minimalism, business and crafts, plus 3D and animation notes.</p>
+    <div>
+      <p class="lead">Each entry gives the <em>origin</em>, the idea, typography, colour, form and grid, <em>motion</em>, where it works and what to avoid.</p>
+      <p style="margin-top:3vh">Claude uses it when you ask for something "in the style of", want a style picked for a project, want two directions mixed, or want a new one invented.</p>
+    </div>
+  </div>
+</section>
+
+<section id="demos">
+  <p class="mono">(02) Three demos</p>
+  <div class="demos">
+    <a class="demo" href="demos/bauhaus/">
+      <span class="n mono">Style 02</span>
+      <h3>Bauhaus</h3>
+      <p>Geometry as language. Circle, square and triangle move with the scroll. Flat primary colours, no shading, a strict grid.</p>
+      <span class="go">Open demo →</span>
+    </a>
+    <a class="demo" href="demos/ma/">
+      <span class="n mono">Style 31</span>
+      <h3>Ma</h3>
+      <p>Japanese emptiness. Few elements, large gaps, a slow fade and a single hairline. The space between things is the design.</p>
+      <span class="go">Open demo →</span>
+    </a>
+    <a class="demo" href="demos/kinetic/">
+      <span class="n mono">Style 46</span>
+      <h3>Kinetic type</h3>
+      <p>Type as the main object. Words change weight and width as you scroll, and the grid breaks on purpose.</p>
+      <span class="go">Open demo →</span>
+    </a>
+  </div>
+</section>
+
+<section id="files">
+  <p class="mono">(03) Repository files</p>
+  <ul class="files">
+    <li><code>skills/design-styles/SKILL.md</code><span>when to use the catalogue, how to pick and mix styles</span></li>
+    <li><code>references/styles.md</code><span>styles 1–50: classics, interfaces, print, minimalism, business</span></li>
+    <li><code>references/styles-2.md</code><span>styles 51–100: regions, retro, crafts, documents, sport, painting</span></li>
+    <li><code>references/styles-3.md</code><span>styles 101–150: typography, printed matter, objects and materials</span></li>
+    <li><code>references/styles-4.md</code><span>styles 151–200</span></li>
+    <li><code>references/3d.md</code><span>three-dimensional directions</span></li>
+    <li><code>references/animations.md</code><span>motion notes for each direction</span></li>
+  </ul>
+  <div class="install">Install: git clone https://github.com/tryvibecoder-dev/editorial-motion-site ~/.claude/skills/editorial-motion-site</div>
+</section>
+
+<footer class="mono">
+  <span>design-styles · 2026</span>
+  <span>MIT</span>
+</footer>
+
+</body>
+</html>
